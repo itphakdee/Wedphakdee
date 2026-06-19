@@ -373,7 +373,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
                     </div>
                 <?php endif; ?>
 
-                <form action="repair_form.php" method="POST">
+                     <form action="lineapi/save_repair.php" method="POST">
                     <div class="mb-3">
                         <label class="form-label">ชื่อผู้ส่ง:</label>
                         <input type="text" name="sender_name" class="form-control" required value="<?= htmlspecialchars($_POST['sender_name'] ?? ''); ?>">
