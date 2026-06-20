@@ -71,7 +71,8 @@ $leaves = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <title>ระบบวันลา</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
     <style>
         * {
             margin: 0;
@@ -352,21 +353,11 @@ $leaves = $stmt->get_result();
     </div>
 
     <div class="container-wrapper">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <ul class="sidebar-menu">
-                <li class="sidebar-title">📋 เมนูหลัก</li>
-                <li><a href="dashboard.php">🏠 หน้าแรก</a></li>
-                <li><a href="leave.php" class="active">📅 วันลา</a></li>
-                <li><a href="e_document.php">📄 หนังสือราชการ</a></li>
-                <li><a href="vehicle/index.php">🚗 ยานพาหนะ</a></li>
-                <li><a href="repair_form.php">🔧 แจ้งซ่อม</a></li>
-
-                <li class="menu-divider"></li>
-                <li class="sidebar-title">⚙️ ตั้งค่า</li>
-                <li><a href="logout.php" class="logout-link">🚪 ออกจากระบบ</a></li>
-            </ul>
-        </aside>
+        <?php
+        $activePage = "leave";
+        $basePath = "";
+        require __DIR__ . "/components/sidebar.php";
+        ?>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -489,7 +480,7 @@ $leaves = $stmt->get_result();
         </main>
     </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <style>
         #logoutModal {

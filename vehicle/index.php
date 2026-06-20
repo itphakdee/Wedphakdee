@@ -66,7 +66,7 @@ $result = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC");
 <head>
     <meta charset="UTF-8">
     <title>งานบริการยานพาหนะ</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
     <style>
         * {
             margin: 0;
@@ -288,20 +288,11 @@ $result = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC");
     <div class="top-bar">🏢 ระบบแจ้งซ่อมและบริหารงาน</div>
 
     <div class="container-wrapper">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <ul class="sidebar-menu">
-                <li class="sidebar-title">📋 เมนูหลัก</li>
-                <li><a href="../dashboard.php">🏠 หน้าแรก</a></li>
-                <li><a href="../leave.php">📅 วันลา</a></li>
-                <li><a href="../e_document.php">📄 หนังสือราชการ</a></li>
-                <li><a href="index.php" class="active">🚗 ยานพาหนะ</a></li>
-                <li><a href="../repair_form.php">🔧 แจ้งซ่อม</a></li>
-
-                <li class="menu-divider"></li>
-                <li class="sidebar-title">⚙️ ตั้งค่า</li>
-                <li><a href="../logout.php" class="logout-link">🚪 ออกจากระบบ</a></li>
-        </aside>
+        <?php
+        $activePage = "vehicle";
+        $basePath = "../";
+        require __DIR__ . "/../components/sidebar.php";
+        ?>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -385,23 +376,6 @@ $result = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC");
                             <input type="hidden" name="save_vehicle" value="1">
 
                             <input type="text" name="fullname" placeholder="ชื่อผู้ขอ" required>
-                            <!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<label>ผู้ร่วมเดินทาง (เลือกได้หลายคน)</label>
-<select name="companions[]" id="companions_select" class="form-control" multiple="multiple" style="width: 100%;" required>
-    
-</select>
-
-<script>
-$(document).ready(function() {
-    $('#companions_select').select2({
-        placeholder: " คลิกเพื่อเลือกรายชื่อผู้ร่วมเดินทาง",
-        allowClear: true
-    });
-});
-</script> -->
                             <label>ผู้ร่วมเดินทาง (เลือกได้หลายคนโดยกด Ctrl ค้างไว้)</label>
                             <select name="companions[]" multiple class="form-control" style="height: 150px;" required>
                                 <?php foreach ($users as $user) { ?>

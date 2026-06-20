@@ -422,7 +422,7 @@ $receivedDocuments = $stmtReceived->get_result();
     <meta charset="UTF-8">
     <title><?php echo $t["title"]; ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <style>
         * {
             margin: 0;
@@ -740,20 +740,11 @@ $receivedDocuments = $stmtReceived->get_result();
     <div class="top-bar">🏢 ระบบแจ้งซ่อมและบริหารงาน</div>
 
     <div class="container-wrapper">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <ul class="sidebar-menu">
-                <li class="sidebar-title">📋 เมนูหลัก</li>
-                <li><a href="dashboard.php">🏠 หน้าแรก</a></li>
-                <li><a href="leave.php">📅 วันลา</a></li>
-                <li><a href="e_document.php" class="active">📄 หนังสือราชการ</a></li>
-                <li><a href="vehicle/index.php">🚗 ยานพาหนะ</a></li>
-                <li><a href="repair_form.php">🔧 แจ้งซ่อม</a></li>
-
-                <li class="menu-divider"></li>
-                <li class="sidebar-title">⚙️ ตั้งค่า</li>
-                <li><a href="logout.php" class="logout-link">🚪 ออกจากระบบ</a></li>
-        </aside>
+        <?php
+        $activePage = "e_document";
+        $basePath = "";
+        require __DIR__ . "/components/sidebar.php";
+        ?>
 
         <!-- Main Content -->
         <main class="main-content">

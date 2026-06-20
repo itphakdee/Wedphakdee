@@ -12,7 +12,7 @@ if (!isset($_SESSION["user_id"])) {
 <head>
 <meta charset="UTF-8">
 <title>งานบริการยานพาหนะ</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="assets/css/style.css">
 
 <style>
 .top-bar {

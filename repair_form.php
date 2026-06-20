@@ -68,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
 <head>
     <meta charset="UTF-8">
     <title>ระบบวันลา</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <style>
         * {
             margin: 0;
@@ -215,93 +215,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
             background: #1f7d35;
         }
 
-        .message-box {
-            background: #d4edda;
-            color: #155724;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #c3e6cb;
-        }
-
-        .error-box {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #f5c6cb;
-        }
-
-        .table-box {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            background: white;
-        }
-
-        table th,
-        table td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        table th {
-            background: #28a745;
-            color: white;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .status-form {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            min-width: 220px;
-        }
-
-        .status-form select {
-            margin: 0;
-            min-width: 140px;
-        }
-
-        .status-form button {
-            margin: 0;
-            width: auto;
-            white-space: nowrap;
-            padding: 10px 14px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 13px;
-            color: white;
-        }
-
-        .pending {
-            background: #f0ad4e;
-        }
-
-        .approved {
-            background: #28a745;
-        }
-
-        .cancel {
-            background: #dc3545;
-        }
-
         @media (max-width: 768px) {
             .sidebar {
                 width: 200px;
@@ -311,18 +224,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
                 margin-left: 200px;
             }
 
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-
-            .status-form {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .status-form button {
-                width: 100%;
-            }
         }
 
         @media (max-width: 600px) {
@@ -349,21 +250,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
     </div>
 
     <div class="container-wrapper">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <ul class="sidebar-menu">
-                <li class="sidebar-title">📋 เมนูหลัก</li>
-                <li><a href="dashboard.php">🏠 หน้าแรก</a></li>
-                <li><a href="leave.php">📅 วันลา</a></li>
-                <li><a href="e_document.php">📄 หนังสือราชการ</a></li>
-                <li><a href="vehicle/index.php">🚗 ยานพาหนะ</a></li>
-                <li><a href="repair_form.php" class="active">🔧 แจ้งซ่อม</a></li>
-
-                <li class="menu-divider"></li>
-                <li class="sidebar-title">⚙️ ตั้งค่า</li>
-                <li><a href="logout.php" class="logout-link">🚪 ออกจากระบบ</a></li>
-            </ul>
-        </aside>
+        <?php
+        $activePage = "repair";
+        $basePath = "";
+        require __DIR__ . "/components/sidebar.php";
+        ?>
 
         <!-- Main Content -->
         <main class="main-content">

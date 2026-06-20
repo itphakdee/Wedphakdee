@@ -108,8 +108,8 @@ $repairs = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <title>เมนูหลัก - ระบบแจ้งซ่อม</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
     <style>
         * {
             margin: 0;
@@ -232,116 +232,6 @@ $repairs = $stmt->get_result();
             color: #333;
         }
 
-        textarea {
-            width: 100%;
-            min-height: 120px;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-sizing: border-box;
-            resize: vertical;
-            font-family: Tahoma, sans-serif;
-        }
-
-        input,
-        button,
-        select {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
-
-        button {
-            background: #4a67ff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #3349c9;
-        }
-
-        .msg-box {
-            background: #e8fff0;
-            color: #0f7a36;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        .table-box {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            background: white;
-        }
-
-        table th,
-        table td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        table th {
-            background: #4a67ff;
-            color: white;
-        }
-
-        .status-form {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            min-width: 220px;
-        }
-
-        .status-form select {
-            margin: 0;
-            min-width: 150px;
-        }
-
-        .status-form button {
-            margin: 0;
-            width: auto;
-            white-space: nowrap;
-            padding: 10px 14px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 13px;
-            color: white;
-        }
-
-        .pending {
-            background: linear-gradient(135deg, #d8002bff, #48cae4);
-        }
-
-        .done {
-            background: linear-gradient(135deg, #00b4d8, #48cae4);
-        }
-
-        .cancel {
-            background: #dc3545;
-        }
-
-        .welcome-text {
-            margin-bottom: 10px;
-            color: #666;
-        }
-
         .user-info {
             background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
             padding: 15px;
@@ -403,23 +293,11 @@ $repairs = $stmt->get_result();
     </div>
 
     <div class="container">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <ul class="sidebar-menu">
-                <li class="sidebar-title">📋 เมนูหลัก</li>
-                <li><a href="dashboard.php">🏠 หน้าแรก</a></li>
-                <li><a href="leave.php">📅 วันลา</a></li>
-                <li><a href="e_document.php">📄 หนังสือราชการ</a></li>
-                <li><a href="vehicle/index.php">🚗 ยานพาหนะ</a></li>
-                <li><a href="repair_form.php">🔧 แจ้งซ่อม</a></li>
-
-                <li class="menu-divider"></li>
-
-                <li class="sidebar-title">⚙️ ตั้งค่า</li>
-                <li><a href="">โปรไฟล์</a></li>
-                <li><a href="logout.php" class="logout-link">🚪 ออกจากระบบ</a></li>
-            </ul>
-        </aside>
+        <?php
+        $activePage = "dashboard";
+        $basePath = "";
+        require __DIR__ . "/components/sidebar.php";
+        ?>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -452,7 +330,7 @@ $repairs = $stmt->get_result();
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script>
         <?php if ($show_login_success) { ?>
             var loginModal = new bootstrap.Modal(document.getElementById('loginSuccessModal'));
