@@ -41,6 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
             VALUES (?, ?, ?, ?, ?, ?, ?, 'รอดำเนินการ')
         ");
 
+        echo "<script>alert(" . json_encode($message) . ");</script>";
         if ($stmt) {
             $user_id = $_SESSION["user_id"];
             $stmt->bind_param("isssssi", $user_id, $sender_name, $department, $repair_system, $location, $technician_id, $details);
@@ -124,8 +125,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
         }
 
         .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);S
-            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            S border-radius: 3px;
         }
 
         .sidebar-menu {
@@ -263,10 +264,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
 
                 <?php if (!empty($message)): ?>
                     <div class="msg-box <?php
-                                        if (strpos($message, '✅') !== false) echo 'msg-success';
-                                        elseif (strpos($message, '⚠️') !== false) echo 'msg-warning';
-                                        else echo 'msg-error';
-                                        ?>">
+                    if (strpos($message, '✅') !== false)
+                        echo 'msg-success';
+                    elseif (strpos($message, '⚠️') !== false)
+                        echo 'msg-warning';
+                    else
+                        echo 'msg-error';
+                    ?>">
                         <?= htmlspecialchars($message); ?>
                     </div>
                 <?php endif; ?>
@@ -274,7 +278,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
                 <form action="../../lineapi/save_repair.php" method="POST">
                     <div class="mb-3">
                         <label class="form-label">ชื่อผู้ส่ง:</label>
-                        <input type="text" name="sender_name" class="form-control" required value="<?= htmlspecialchars($_POST['sender_name'] ?? ''); ?>">
+                        <input type="text" name="sender_name" class="form-control" required
+                            value="<?= htmlspecialchars($_POST['sender_name'] ?? ''); ?>">
                     </div>
 
                     <div class="mb-3">
@@ -282,9 +287,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
                         <select name="department" class="form-select" required>
                             <option value="">-- เลือกแผนก --</option>
                             <option value="IT" <?= ($_POST['department'] ?? '') === 'IT' ? 'selected' : ''; ?>>IT</option>
-                            <option value="บริหาร" <?= ($_POST['department'] ?? '') === 'บริหาร' ? 'selected' : ''; ?>>บริหาร</option>
-                            <option value="OPD" <?= ($_POST['department'] ?? '') === 'OPD' ? 'selected' : ''; ?>>OPD</option>
-                            <option value="IPD" <?= ($_POST['department'] ?? '') === 'IPD' ? 'selected' : ''; ?>>IPD</option>
+                            <option value="บริหาร" <?= ($_POST['department'] ?? '') === 'บริหาร' ? 'selected' : ''; ?>>
+                                บริหาร</option>
+                            <option value="OPD" <?= ($_POST['department'] ?? '') === 'OPD' ? 'selected' : ''; ?>>OPD
+                            </option>
+                            <option value="IPD" <?= ($_POST['department'] ?? '') === 'IPD' ? 'selected' : ''; ?>>IPD
+                            </option>
                         </select>
                     </div>
 
@@ -294,7 +302,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
                             <option value="">-- เลือกระบบ --</option>
                             <option value="ระบบไฟฟ้า" <?= ($_POST['repair_system'] ?? '') === 'ระบบไฟฟ้า' ? 'selected' : ''; ?>>ระบบไฟฟ้า</option>
                             <option value="ระบบคอมพิวเตอร์" <?= ($_POST['repair_system'] ?? '') === 'ระบบคอมพิวเตอร์' ? 'selected' : ''; ?>>ระบบคอมพิวเตอร์</option>
-                            <option value="ระบบจัดการเครื่องมือแพทย์" <?= ($_POST['repair_system'] ?? '') === 'ระบบจัดการเครื่องมือแพทย์' ? 'selected' : ''; ?>>ระบบจัดการเครื่องมือแพทย์</option>
+                            <option value="ระบบจัดการเครื่องมือแพทย์" <?= ($_POST['repair_system'] ?? '') === 'ระบบจัดการเครื่องมือแพทย์' ? 'selected' : ''; ?>>ระบบจัดการเครื่องมือแพทย์
+                            </option>
                             <option value="ระบบทั่วไป" <?= ($_POST['repair_system'] ?? '') === 'ระบบทั่วไป' ? 'selected' : ''; ?>>ระบบทั่วไป</option>
                         </select>
                     </div>
@@ -304,8 +313,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
                         <select name="location" class="form-select" required>
                             <option value="">-- เลือกสถานที่ --</option>
                             <option value="ผู้ป่วยนอก" <?= ($_POST['location'] ?? '') === 'ผู้ป่วยนอก' ? 'selected' : ''; ?>>ผู้ป่วยนอก</option>
-                            <option value="ผู้ป่วยใน" <?= ($_POST['location'] ?? '') === 'ผู้ป่วยใน' ? 'selected' : ''; ?>>ผู้ป่วยใน</option>
-                            <option value="บริหาร" <?= ($_POST['location'] ?? '') === 'บริหาร' ? 'selected' : ''; ?>>บริหาร</option>
+                            <option value="ผู้ป่วยใน" <?= ($_POST['location'] ?? '') === 'ผู้ป่วยใน' ? 'selected' : ''; ?>>
+                                ผู้ป่วยใน</option>
+                            <option value="บริหาร" <?= ($_POST['location'] ?? '') === 'บริหาร' ? 'selected' : ''; ?>>บริหาร
+                            </option>
                             <option value="ตึก10เตียง" <?= ($_POST['location'] ?? '') === 'ตึก10เตียง' ? 'selected' : ''; ?>>ตึก10เตียง</option>
                         </select>
                     </div>
@@ -324,12 +335,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
 
                     <div class="mb-3">
                         <label class="form-label">รายละเอียดแจ้งซ่อม:</label>
-                        <textarea name="details" class="form-control" rows="5" required><?= htmlspecialchars($_POST['details'] ?? ''); ?></textarea>
+                        <textarea name="details" class="form-control" rows="5"
+                            required><?= htmlspecialchars($_POST['details'] ?? ''); ?></textarea>
                     </div>
 
                     <input type="hidden" name="save_repair" value="1">
                     <button type="submit" class="btn-submit">✅ ส่งข้อมูลและแจ้งเตือน Line</button>
-             
+
                 </form>
             </div>
         </main>
@@ -343,7 +355,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_repair"])) {
             showMessageDialog(
                 <?php echo json_encode("สวัสดี " . $_SESSION["fullname"] . "\nยินดีต้อนรับเข้าสู่ระบบแจ้งซ่อมและบริหารงาน", JSON_UNESCAPED_UNICODE); ?>,
                 <?php echo json_encode("✅ ยินดีต้อนรับ", JSON_UNESCAPED_UNICODE); ?>
-            );z
+            ); z
         <?php } ?>
     </script>
 </body>

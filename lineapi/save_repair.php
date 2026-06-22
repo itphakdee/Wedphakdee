@@ -16,11 +16,14 @@ try {
         $sender_name = $_POST['sender_name'];
         $department  = $_POST['department'];
         $details     = $_POST['details'];
+        $location    = $_POST['location'];
+        $technician_id = $_POST['technician_id'];
 
         // บันทึกลงตาราง 
-        $sql = "INSERT INTO repair_jobs (sender_name, department, details) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO repair_jobs (sender_name, department, details, location , technician_id) VALUES (?, ?, ?, ? ,? )";
+        // echo "<script>alert(" . json_encode($sql) . ");</script>";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$sender_name, $department, $details]);
+        $stmt->execute([$sender_name, $department, $details, $location ,$technician_id]);
 
         // --- 3. เตรียมข้อความแจ้งเตือนกลุ่ม ---
         $messageText = "🆘 [แจ้งซ่อมใหม่]\n" .
@@ -49,16 +52,16 @@ try {
         ];
 
         // --- 4. ส่งด้วย CURL ---
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        // $ch = curl_init($url);
+        // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        // curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-        $result = curl_exec($ch);
-        curl_close($ch);
+        // $result = curl_exec($ch);
+        // curl_close($ch);
 
         echo "<script>alert('ส่งแจ้งเตือนเข้ากลุ่มเรียบร้อย!'); window.location='../repair_form/computer/indexrepairlist.php';</script>";
     }
