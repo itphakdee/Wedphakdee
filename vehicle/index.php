@@ -6,30 +6,22 @@ if (!isset($_SESSION["user_id"])) {
     exit();
 }
 // ================= USERS =================
-$users = [];
+$get_user = "SELECT fullname
+        FROM users
+        WHERE status = 'active'
+        ORDER BY fullname";
 
-$sqlUsers = "SELECT id, fullname FROM users";
-
-$resultUsers = mysqli_query($conn, $sqlUsers);
-
-if ($resultUsers) {
-
-    while ($row = mysqli_fetch_assoc($resultUsers)) {
-
-        $users[] = $row;
-    }
-} else {
-
-    echo mysqli_error($conn);
-}
-$message = "";
+$stmt_users = $conn->prepare($get_user);
+$stmt_users->execute();
+$result_users = $stmt_users->get_result();
 // ดึงรายชื่อผู้ใช้
 
 
 // ✅ บันทึกข้อมูลขอใช้รถ
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_vehicle"])) {
     $fullname = trim($_POST["fullname"]);
-    $companions = $_POST["companions"]; // รับค่าชื่อผู้ร่วมเดินทาง
+    $members = $_POST['members'] ?? []; // รับค่าผู้ร่วมเดินทางเป็น Array
+    $member_str = implode(', ', $members);
     $car = trim($_POST["car"]);
     $use_date = $_POST["use_date"];
     $detail = trim($_POST["detail"]);
@@ -37,27 +29,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_vehicle"])) {
     if (empty($fullname) || empty($car) || empty($use_date)) {
         $message = "กรุณากรอกข้อมูลให้ครบ";
     } else {
-        // เพิ่ม companions ลงใน SQL Statement
+
         $stmt = $conn->prepare("INSERT INTO vehicle_requests (user_id, fullname, companions, car, use_date, detail) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("isssss", $_SESSION["user_id"], $fullname, $companions, $car, $use_date, $detail);
+        $stmt->bind_param("isssss", $_SESSION["user_id"], $fullname, $member_str, $car, $use_date, $detail);
 
         if ($stmt->execute()) {
-            $message = "บันทึกข้อมูลเรียบร้อยแล้ว";
+            $message = "บันทึกข้อมูลเรียบร้อยแล้ว " . $member_str;
         } else {
-            $message = "เกิดข้อผิดพลาด";
+            $message = "เกิดข้อผิดพลาด " . $member_str;
         }
         $stmt->close();
     }
 }
-// ผู้ร่วมเดินทาง
-$companions = "";
-
-if (!empty($_POST["companions"])) {
-    $companions = implode(", ", $_POST["companions"]);
-}
 
 // ดึงข้อมูลมาแสดง
-$result = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC");
+$result_requests = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC");
+
 ?>
 
 <!DOCTYPE html>
@@ -67,6 +54,13 @@ $result = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC");
     <meta charset="UTF-8">
     <title>งานบริการยานพาหนะ</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -206,7 +200,7 @@ $result = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC");
             border: 1px solid #c3e6cb;
         }
 
-        input,
+        /*input,
         select,
         textarea,
         button {
@@ -217,7 +211,7 @@ $result = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC");
             border-radius: 8px;
             box-sizing: border-box;
             font-family: Tahoma, sans-serif;
-        }
+        }*/
 
         textarea {
             min-height: 120px;
@@ -253,6 +247,52 @@ $result = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC");
         table th {
             background: #2a9d8f;
             color: white;
+        }
+
+        .bootstrap-select {
+            width: 100% !important;
+        }
+
+        .bootstrap-select>.dropdown-toggle {
+            width: 100%;
+            height: calc(1.5em + .75rem + 2px);
+            /* สูงเท่า form-control */
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: .375rem;
+            box-shadow: none;
+        }
+
+        /* ตอนโฟกัสให้เหมือน input */
+        .bootstrap-select>.dropdown-toggle:focus,
+        .bootstrap-select.show>.dropdown-toggle {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
+        }
+
+        /* จัดข้อความให้อยู่กึ่งกลาง */
+        .bootstrap-select .filter-option {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .form-control {
+            background: #eef4f6;
+            border: 1px solid #b6e0fe;
+            border-radius: 20px;
+        }
+
+        .bootstrap-select>.dropdown-toggle {
+            background: #eef4f6 !important;
+            border: 1px solid #b6e0fe !important;
+            border-radius: 20px !important;
+            height: 52px;
+            padding: 0 20px;
         }
 
         @media (max-width: 768px) {
@@ -311,78 +351,22 @@ $result = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC");
 
                 // ================== เพิ่มข้อมูล ==================
                 if ($page == "add") {
-                ?>
+                    ?>
 
                     <div class="card">
                         <h2>➕ เพิ่มข้อมูลขอใช้รถ</h2>
-
-                        <?php if (!empty($message)) { ?>
-                            <div class="msg"><?php echo $message = "";
-
-                                                // ✅ แก้ไขส่วนบันทึกข้อมูลขอใช้รถ
-                                                if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["save_vehicle"])) {
-                                                    $fullname = trim($_POST["fullname"]);
-                                                    $subject = trim($_POST["subject"]);
-                                                    $car = trim($_POST["car"]);
-                                                    $use_date = $_POST["use_date"];
-                                                    $use_time = $_POST["use_time"];
-                                                    $location = trim($_POST["location"]);
-                                                    $urgency = $_POST["urgency"];
-                                                    $detail = trim($_POST["detail"]);
-
-                                                    // ✅ จัดการผู้ร่วมเดินทาง (แปลง Array เป็น String)
-                                                    $companions_text = "";
-                                                    if (!empty($_POST["companions"])) {
-                                                        $companions_text = implode(", ", $_POST["companions"]);
-                                                    }
-
-                                                    // ... (ส่วนของการ Upload File เหมือนเดิม) ...
-
-                                                    $stmt = $conn->prepare("
-        INSERT INTO vehicle_requests 
-        (user_id, fullname, subject, car, use_date, use_time, location, urgency, companions, detail, document)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ");
-
-                                                    $stmt->bind_param(
-                                                        "issssssssss",
-                                                        $_SESSION["user_id"],
-                                                        $fullname,
-                                                        $subject,
-                                                        $car,
-                                                        $use_date,
-                                                        $use_time,
-                                                        $location,
-                                                        $urgency,
-                                                        $companions_text, // บันทึกรายชื่อที่รวมกันแล้ว
-                                                        $detail,
-                                                        $document_name
-                                                    );
-
-                                                    if ($stmt->execute()) {
-                                                        $message = "บันทึกข้อมูลเรียบร้อยแล้ว";
-                                                    }
-                                                    // ...
-
-
-                                                } ?></div>
-                        <?php } ?>
-                        <?php if (!empty($message)) { ?>
-                            <script>
-                                alert("ส่งคำขอเรียบร้อยแล้ว");
-                            </script>
-                        <?php } ?>
                         <form method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="save_vehicle" value="1">
 
                             <input type="text" name="fullname" placeholder="ชื่อผู้ขอ" required>
                             <label>ผู้ร่วมเดินทาง (เลือกได้หลายคนโดยกด Ctrl ค้างไว้)</label>
-                            <select name="companions[]" multiple class="form-control" style="height: 150px;" required>
-                                <?php foreach ($users as $user) { ?>
-                                    <option value="<?php echo htmlspecialchars($user["fullname"]); ?>">
-                                        <?php echo htmlspecialchars($user["fullname"]); ?>
+                            <select class="selectpicker" name="members[]" multiple data-live-search="true"
+                                title="เลือกผู้ร่วมเดินทาง" data-width="100%">
+                                <?php while ($user = $result_users->fetch_assoc()): ?>
+                                    <option value="<?= $user['fullname']; ?>">
+                                        <?= htmlspecialchars($user['fullname']); ?>
                                     </option>
-                                <?php } ?>
+                                <?php endwhile; ?>
                             </select>
 
                             <input type="text" name="subject" placeholder="หัวข้อเรื่อง" required>
@@ -428,8 +412,8 @@ $result = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC");
                                 <th>วันที่</th>
                                 <th>รายละเอียด</th>
                             </tr>
-                            <?php if ($result && $result->num_rows > 0) { ?>
-                                <?php while ($row = $result->fetch_assoc()) { ?>
+                            <?php if ($result_requests && $result_requests->num_rows > 0) { ?>
+                                <?php while ($row = $result_requests->fetch_assoc()) { ?>
                                     <tr>
                                         <td><?php echo $row["id"]; ?></td>
                                         <td><?php echo htmlspecialchars($row["fullname"]); ?></td>
@@ -462,15 +446,22 @@ $result = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC");
         </main>
     </div>
 
-   <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>#003d99
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <?php require __DIR__ . "/../components/dialog.php"; ?>
     <script>
-        <?php if ($show_login_success) { ?>
-            showMessageDialog(
-                <?php echo json_encode("สวัสดี " . $_SESSION["fullname"] . "\nยินดีต้อนรับเข้าสู่ระบบแจ้งซ่อมและบริหารงาน", JSON_UNESCAPED_UNICODE); ?>,
-                <?php echo json_encode("✅ ยินดีต้อนรับ", JSON_UNESCAPED_UNICODE); ?>
-            );
-        <?php } ?>
+        $(function () {
+            $('#members').select2({
+                placeholder: 'เลือกผู้ร่วมเดินทาง',
+                closeOnSelect: false,
+                templateResult: function (data) {
+                    if (!data.id) {
+                        return data.text;
+                    }
+
+                    return $('<span class="wrap">' + data.text + '</span>');
+                }
+            });
+        });
     </script>
 </body>
 
