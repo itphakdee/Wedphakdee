@@ -122,6 +122,7 @@ $result_requests = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC
 
         .sidebar-menu {
             list-style: none;
+            padding: 0;
         }
 
         .sidebar-menu li {
@@ -256,7 +257,7 @@ $result_requests = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC
         .bootstrap-select>.dropdown-toggle {
             width: 100%;
             height: calc(1.5em + .75rem + 2px);
-            /* สูงเท่า form-control */
+
             padding: .375rem .75rem;
             font-size: 1rem;
             line-height: 1.5;
@@ -267,14 +268,14 @@ $result_requests = $conn->query("SELECT * FROM vehicle_requests ORDER BY id DESC
             box-shadow: none;
         }
 
-        /* ตอนโฟกัสให้เหมือน input */
+        
         .bootstrap-select>.dropdown-toggle:focus,
         .bootstrap-select.show>.dropdown-toggle {
             border-color: #86b7fe;
             box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25);
         }
 
-        /* จัดข้อความให้อยู่กึ่งกลาง */
+        
         .bootstrap-select .filter-option {
             display: flex;
             align-items: center;

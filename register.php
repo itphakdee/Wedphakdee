@@ -17,14 +17,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = "รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน";
         $register_status = "fail";
     } else {
-        $check = $conn->prepare("SELECT id FROM users WHERE username = ?");
+        $sqlSelect = "SELECT id FROM users WHERE username = ?";
+        $check = $conn->prepare($sqlSelect);
         $check->bind_param("s", $username);
         $check->execute();
         $check->store_result();
-
         if ($check->num_rows > 0) {
             $message = "ชื่อผู้ใช้นี้ถูกใช้งานแล้ว";
             $register_status = "fail";
+            echo "<script>console.log('$register_status');</script>";
         } else {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
@@ -34,14 +35,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($stmt->execute()) {
                 $message = "สมัครสมาชิกสำเร็จ";
                 $register_status = "success";
+                header("Location: login.php");
             } else {
                 $message = "เกิดข้อผิดพลาดในการสมัครสมาชิก";
                 $register_status = "fail";
             }
-
             $stmt->close();
         }
-
         $check->close();
     }
 }
@@ -78,15 +78,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header <?php echo ($register_status === 'success') ? 'bg-success text-white' : 'bg-danger text-white'; ?>">
+                <div
+                    class="modal-header <?php echo ($register_status === 'success') ? 'bg-success text-white' : 'bg-danger text-white'; ?>">
                     <h5 class="modal-title"><?php echo ($register_status === 'success') ? 'สำเร็จ' : 'ล้มเหลว'; ?></h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <?php echo htmlspecialchars($message); ?>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn <?php echo ($register_status === 'success') ? 'btn-success' : 'btn-danger'; ?>" data-bs-dismiss="modal">ตกลง</button>
+                    <button type="button"
+                        class="btn <?php echo ($register_status === 'success') ? 'btn-success' : 'btn-danger'; ?>"
+                        data-bs-dismiss="modal">ตกลง</button>
                 </div>
             </div>
         </div>
@@ -99,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             registerModal.show();
 
             <?php if ($register_status === 'success') { ?>
-                document.getElementById('registerModal').addEventListener('hidden.bs.modal', function() {
+                document.getElementById('registerModal').addEventListener('hidden.bs.modal', function () {
                     window.location.href = 'login.php';
                 });
             <?php } ?>
