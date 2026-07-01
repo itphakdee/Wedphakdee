@@ -226,12 +226,15 @@ $result = $conn->query($sql);
 
 
             <div class="card-body">
-                <a href="repair_form.php" class="btn btn-success mb-3">
+                <a href="repair_form.php" class="btn btn-success ">
                     เพิ่มข้อมูลแจ้งซ่อม
                 </a>
 
                 <a href="savejob/receive_job_list.php" class="btn btn-primary">
                     📋 รายละเอียดงานที่รับซ่อม
+                </a>
+                <a href="Dashboard/dashboard.php" class="btn btn-info text-white">
+                    📊 Dashboard สรุปงาน
                 </a>
                 <table class="table table-bordered table-striped">
 
@@ -343,7 +346,8 @@ $result = $conn->query($sql);
             showMessageDialog(
                 <?php echo json_encode("สวัสดี " . $_SESSION["fullname"] . "\nยินดีต้อนรับเข้าสู่ระบบแจ้งซ่อมและบริหารงาน", JSON_UNESCAPED_UNICODE); ?>,
                 <?php echo json_encode("✅ ยินดีต้อนรับ", JSON_UNESCAPED_UNICODE); ?>
-            ); z
+            );
+            z
         <?php } ?>
     </script>
 </body>

@@ -1,0 +1,232 @@
+body {
+    background: #eef3f8;
+    font-family: 'Tahoma', sans-serif;
+}
+
+/* Header */
+
+.page-title {
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    color: #003d99;
+
+    margin-bottom: 20px;
+
+}
+
+/* KPI */
+
+.kpi {
+
+    color: #fff;
+
+    border-radius: 15px;
+
+    padding: 25px;
+
+    text-align: center;
+
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .15);
+
+    transition: .3s;
+
+}
+
+.kpi:hover {
+
+    transform: translateY(-6px);
+
+    box-shadow: 0 15px 30px rgba(0, 0, 0, .25);
+
+}
+
+.kpi h2 {
+
+    font-size: 38px;
+
+    margin: 0;
+
+    font-weight: bold;
+
+}
+
+.kpi h3 {
+
+    margin: 0;
+
+    font-weight: bold;
+
+}
+
+.kpi p {
+
+    margin-top: 10px;
+
+    font-size: 16px;
+
+}
+
+/* Card */
+
+.card {
+
+    border: none;
+
+    border-radius: 15px;
+
+    overflow: hidden;
+
+}
+
+.card-header {
+
+    background: #0051ff;
+
+    color: white;
+
+    font-weight: bold;
+
+    font-size: 17px;
+
+}
+
+.card-body {
+
+    background: white;
+
+}
+
+/* Canvas */
+
+canvas {
+
+    width: 100% !important;
+
+    height: 350px !important;
+
+}
+
+/* Table */
+
+.table {
+
+    margin: 0;
+
+}
+
+.table thead {
+
+    background: #0051ff;
+
+    color: white;
+
+}
+
+.table-hover tbody tr:hover {
+
+    background: #e8f3ff;
+
+}
+
+/* Badge */
+
+.badge {
+
+    font-size: 13px;
+
+    padding: 8px 12px;
+
+}
+
+/* Button */
+
+.btn {
+
+    border-radius: 10px;
+
+}
+
+.btn:hover {
+
+    transform: scale(1.03);
+
+}
+
+/* Shadow */
+
+.shadow {
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .1) !important;
+
+}
+
+/* Responsive */
+
+@media(max-width:992px) {
+
+    canvas {
+
+        height: 280px !important;
+
+    }
+
+    .kpi h2 {
+
+        font-size: 28px;
+
+    }
+
+}
+
+@media(max-width:768px) {
+
+    .kpi {
+
+        margin-bottom: 15px;
+
+    }
+
+    canvas {
+
+        height: 250px !important;
+
+    }
+
+}
+
+@media(max-width:576px) {
+
+    .page-title {
+
+        font-size: 22px;
+
+    }
+
+    .kpi {
+
+        padding: 18px;
+
+    }
+
+    .kpi h2 {
+
+        font-size: 24px;
+
+    }
+
+    .kpi p {
+
+        font-size: 14px;
+
+    }
+
+    .card-header {
+
+        font-size: 15px;
+
+    }
+
+}
