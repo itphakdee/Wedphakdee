@@ -172,7 +172,6 @@ $result = $conn->query($sql);
                                             class="btn btn-primary btn-sm">
 
                                             พิมพ์
-
                                         </a>
 
                                     </td>
