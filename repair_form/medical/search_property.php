@@ -43,6 +43,7 @@ if ($result->num_rows > 0) {
             <td><?= htmlspecialchars($row['department_unit']) ?></td>
             <td><?= htmlspecialchars($row['borrow_department']) ?></td>
             <td><?= htmlspecialchars($row['withdraw_status']) ?></td>
+            <td><?= htmlspecialchars($row['withdraw_status']) ?></td>
             <td class="text-center">
                 <button type="button" class="btn btn-primary btn-sm btn-view-detail" 
                     data-bs-toggle="modal"
@@ -66,7 +67,7 @@ if ($result->num_rows > 0) {
                     data-color="<?= htmlspecialchars($row['color'] ?? '') ?>">
                     <i class="fas fa-eye"></i>
                 </button>
-                <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm" title="แก้ไข">
+                <a href="maintenance_detail.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm" title="แก้ไข">
                     <i class="fas fa-pen"></i>
                 </a>
             </td>

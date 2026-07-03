@@ -343,6 +343,7 @@ $result = $conn->query($sql);
                                         <td><?= htmlspecialchars($row['department_unit']) ?></td>
                                         <td><?= htmlspecialchars($row['borrow_department']) ?></td>
                                         <td><?= htmlspecialchars($row['withdraw_status']) ?></td>
+                                        <td><?= htmlspecialchars($row['withdraw_status']) ?></td>
                                         <td class="text-center">
                                             <button type="button" class="btn btn-primary btn-sm btn-view-detail"
                                                 data-bs-toggle="modal" data-bs-target="#equipmentDetailModal"
@@ -365,7 +366,7 @@ $result = $conn->query($sql);
                                                 data-color="<?= htmlspecialchars($row['color'] ?? '') ?>">
                                                 <i class="fas fa-eye"></i>
                                             </button>
-                                            <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm"
+                                            <a href="maintenance_detail.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm"
                                                 title="แก้ไข">
                                                 <i class="fas fa-pen"></i>
                                             </a>

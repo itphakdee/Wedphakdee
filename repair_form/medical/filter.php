@@ -53,9 +53,9 @@
     </div>
     <nav class="navbar navbar-expand-lg navbar-custom py-2 mb-4">
         <div class="">
-            <div class="collapse navbar-collapse ml-3" id="navbarNav">
+            <div class="collapse navbar-collapse " id="navbarNav">
                 <ul class="navbar-nav align-items-center">
-                    <li class="nav-item me-2">
+                    <li class="nav-item ms-3">
                         <a class="nav-link nav-link-custom bg-dashboard-active px-3 fw-bold" href="index.php">
                             <i class="fa-solid fa-chart-pie me-1"></i> Dashboard
                         </a>
