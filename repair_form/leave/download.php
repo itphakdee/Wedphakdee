@@ -1,0 +1,4 @@
+<?php
+require_once __DIR__ . '/config_leave.php';$id=(int)($_GET['id']??0);$type=(string)($_GET['type']??'');$row=leave_get_application($id);if(!$row||!leave_can_view_application($row)){http_response_code(403);die('ไม่มีสิทธิ์เปิดเอกสารนี้');}
+$relative=$type==='medical'?$row['medical_certificate']:($type==='other'?$row['other_attachment']:'');if(!$relative)die('ไม่พบเอกสาร');$base=realpath(__DIR__.'/uploads');$file=realpath(__DIR__.'/'.$relative);if(!$base||!$file||strpos($file,$base)!==0||!is_file($file)){http_response_code(404);die('ไม่พบไฟล์');}
+$ext=strtolower(pathinfo($file,PATHINFO_EXTENSION));$mime=array('pdf'=>'application/pdf','jpg'=>'image/jpeg','jpeg'=>'image/jpeg','png'=>'image/png');header('Content-Type: '.(isset($mime[$ext])?$mime[$ext]:'application/octet-stream'));header('Content-Disposition: inline; filename="'.basename($file).'"');header('Content-Length: '.filesize($file));readfile($file);exit;

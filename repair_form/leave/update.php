@@ -1,0 +1,69 @@
+<?php
+require_once __DIR__ . '/config_leave.php';
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') leave_redirect('index.php');
+leave_require_csrf();
+$id = (int)($_POST['id'] ?? 0);
+$row = leave_get_application($id);
+if (!$row || !leave_can_edit_application($row)) {
+    http_response_code(403);
+    die('ไม่มีสิทธิ์แก้ไขรายการนี้');
+}
+$owner = leave_user_profile_by_id((int)$row['user_id']);
+if (!$owner) die('ไม่พบผู้ยื่นใบลา');
+$newMedical = null;
+$newOther = null;
+$conn->begin_transaction();
+try {
+    $typeId = (int)($_POST['leave_type_id'] ?? 0);
+    $start = trim((string)($_POST['start_date'] ?? ''));
+    $end = trim((string)($_POST['end_date'] ?? ''));
+    $days = (float)($_POST['leave_days'] ?? 0);
+    $reason = trim((string)($_POST['reason'] ?? ''));
+    $phone = trim((string)($_POST['contact_phone'] ?? ''));
+    $handoverId = (int)($_POST['handover_user_id'] ?? 0);
+    $supervisorId = (int)($_POST['supervisor_user_id'] ?? 0);
+    if ($typeId <= 0 || $start === '' || $end === '' || $days <= 0 || $reason === '' || $handoverId <= 0 || $supervisorId <= 0) throw new Exception('กรุณากรอกข้อมูลให้ครบ');
+    if (strtotime($end) < strtotime($start)) throw new Exception('ช่วงวันที่ลาไม่ถูกต้อง');
+    if ($handoverId === (int)$row['user_id']) throw new Exception('ผู้รับมอบงานต้องเป็นบุคคลอื่น');
+    $stmt = $conn->prepare("SELECT id,name FROM leave_types_master WHERE id=? AND is_active=1 LIMIT 1");
+    $stmt->bind_param('i', $typeId);
+    $stmt->execute();
+    $type = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    if (!$type) throw new Exception('ไม่พบประเภทการลา');
+    $stmt = $conn->prepare("SELECT id,fullname FROM users WHERE id=? AND status='active' LIMIT 1");
+    $stmt->bind_param('i', $handoverId);
+    $stmt->execute();
+    $handover = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    if (!$handover) throw new Exception('ไม่พบผู้รับมอบงาน');
+    $department = leave_user_department_info($owner);
+    if (!$department['has_department']) throw new Exception('ผู้ยื่นใบลายังไม่ได้กำหนดแผนก');
+    $resolved = leave_supervisor_for_user($owner);
+    if (!$resolved || $supervisorId !== (int)$resolved['id']) throw new Exception('ไม่พบหัวหน้าแผนกของผู้ยื่นใบลา หรือข้อมูลหัวหน้างานไม่ถูกต้อง');
+    $newMedical = leave_upload_file('medical_certificate', 'medical', 'medical');
+    $newOther = leave_upload_file('other_attachment', 'attachments', 'leave');
+    $medical = $newMedical ?: $row['medical_certificate'];
+    $other = $newOther ?: $row['other_attachment'];
+    $fy = leave_fiscal_year($start);
+    $typeName = $type['name'];
+    $handoverName = $handover['fullname'];
+    $supervisorName = $resolved['fullname'];
+    $stmt = $conn->prepare("UPDATE leave_applications SET leave_type_id=?,leave_type_name=?,fiscal_year=?,start_date=?,end_date=?,leave_days=?,reason=?,contact_phone=?,medical_certificate=?,other_attachment=?,handover_user_id=?,handover_name=?,handover_status='pending',handover_comment=NULL,handover_at=NULL,supervisor_user_id=?,supervisor_name=?,supervisor_status='pending',supervisor_comment=NULL,supervisor_at=NULL,status='pending_handover',status_before_cancel=NULL,cancel_reason=NULL,cancel_requested_at=NULL,updated_at=NOW() WHERE id=?");
+    $stmt->bind_param('isissdssssisisi', $typeId, $typeName, $fy, $start, $end, $days, $reason, $phone, $medical, $other, $handoverId, $handoverName, $supervisorId, $supervisorName, $id);
+    if (!$stmt->execute()) throw new Exception($stmt->error);
+    $stmt->close();
+    $conn->commit();
+    if ($newMedical && $row['medical_certificate']) leave_delete_file($row['medical_certificate']);
+    if ($newOther && $row['other_attachment']) leave_delete_file($row['other_attachment']);
+    leave_audit($id, 'edit', 'แก้ไขข้อมูลใบลาและเริ่มขั้นตอนรับมอบงานใหม่');
+    leave_flash('success', 'บันทึกการแก้ไขเรียบร้อยแล้ว');
+    leave_redirect('detail.php?id=' . $id);
+} catch (Exception $e) {
+    $conn->rollback();
+    if ($newMedical) leave_delete_file($newMedical);
+    if ($newOther) leave_delete_file($newOther);
+    leave_flash('error', $e->getMessage());
+    leave_redirect('edit.php?id=' . $id);
+}
+z

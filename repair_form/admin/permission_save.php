@@ -1,0 +1,3 @@
+<?php
+require_once __DIR__.'/admin_guard.php';$uid=(int)($_POST['user_id']??0);$perms=$_POST['permissions']??[];if(!$uid){header('Location:permissions.php');exit;}
+$conn->begin_transaction();try{$d=$conn->prepare("DELETE FROM user_permissions WHERE user_id=?");$d->bind_param('i',$uid);$d->execute();$d->close();$i=$conn->prepare("INSERT INTO user_permissions(user_id,permission_key) VALUES(?,?)");foreach($perms as $p){$p=trim((string)$p);if($p==='')continue;$i->bind_param('is',$uid,$p);$i->execute();}$i->close();$conn->commit();header('Location:permissions.php?user_id='.$uid);exit;}catch(Throwable $e){$conn->rollback();die('บันทึกสิทธิ์ไม่สำเร็จ: '.ah($e->getMessage()));}?>

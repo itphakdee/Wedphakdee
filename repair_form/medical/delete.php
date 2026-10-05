@@ -1,0 +1,2 @@
+<?php
+require_once __DIR__ . '/config_medical.php';medical_require_permission('delete');if($_SERVER['REQUEST_METHOD']!=='POST'||!medical_verify_csrf(isset($_POST['csrf_token'])?$_POST['csrf_token']:'')){http_response_code(400);die('Bad Request');}$id=(int)$_POST['id'];$stmt=$conn->prepare("DELETE FROM medical_repair_requests WHERE id=?");$stmt->bind_param('i',$id);$ok=$stmt->execute();$stmt->close();medical_flash($ok?'success':'error',$ok?'ลบรายการถาวรเรียบร้อยแล้ว':'ลบรายการไม่สำเร็จ');header('Location:index.php');exit;

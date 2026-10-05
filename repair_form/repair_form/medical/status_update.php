@@ -1,0 +1,13 @@
+<?php
+require_once __DIR__ . '/config_medical.php';
+medical_require_permission('manage');
+if($_SERVER['REQUEST_METHOD']!=='POST'||!medical_verify_csrf(isset($_POST['csrf_token'])?$_POST['csrf_token']:'')){http_response_code(400);die('Bad Request');}
+$id=(int)(isset($_POST['id'])?$_POST['id']:0);$row=medical_get_request($id);if(!$row){medical_flash('error','ไม่พบรายการ');header('Location:index.php');exit;}
+$status=trim(isset($_POST['status'])?$_POST['status']:'');$allowed=array('pending','assigned','in_progress','waiting_parts','completed','cancelled');if(!in_array($status,$allowed,true)){$status=$row['status'];}
+$techId=(int)(isset($_POST['technician_id'])?$_POST['technician_id']:0);$techName='';if($techId>0){$stmt=$conn->prepare("SELECT fullname FROM medical_technicians WHERE id=? AND status='active' LIMIT 1");if($stmt){$stmt->bind_param('i',$techId);$stmt->execute();$stmt->bind_result($techName);if(!$stmt->fetch()){$techId=0;$techName='';}$stmt->close();}}
+$note=trim(isset($_POST['technician_note'])?$_POST['technician_note']:'');$resolution=trim(isset($_POST['resolution'])?$_POST['resolution']:'');$cost=max(0,(float)(isset($_POST['cost'])?$_POST['cost']:0));
+$accepted=$row['accepted_at'];$completed=$row['completed_at'];if(in_array($status,array('assigned','in_progress','waiting_parts','completed'),true)&&!$accepted)$accepted=date('Y-m-d H:i:s');if($status==='completed')$completed=date('Y-m-d H:i:s');elseif($row['status']==='completed'&&$status!=='completed')$completed=null;
+$stmt=$conn->prepare("UPDATE medical_repair_requests SET status=?,technician_id=?,technician_name=?,technician_note=?,resolution=?,cost=?,accepted_at=?,completed_at=? WHERE id=?");$stmt->bind_param('sisssdssi',$status,$techId,$techName,$note,$resolution,$cost,$accepted,$completed,$id);$ok=$stmt->execute();$err=$stmt->error;$stmt->close();if(!$ok){medical_flash('error','บันทึกสถานะไม่สำเร็จ: '.$err);header('Location:detail.php?id='.$id);exit;}
+$old=$row['status'];$sm=medical_status_meta($status);medical_log($id,'status_update',$old,$status,$note!==''?$note:'เปลี่ยนสถานะเป็น '.$sm['label']);
+$msg="🩺 อัปเดตงานซ่อมเครื่องมือแพทย์\nเลขที่: {$row['request_no']}\nเครื่องมือ: {$row['equipment_name']}\nสถานะ: {$sm['label']}\nช่าง: ".($techName!==''?$techName:'ยังไม่มอบหมาย')."\n".($note!==''?'หมายเหตุ: '.$note."\n":'').($resolution!==''?'ผลการดำเนินงาน: '.$resolution:'');
+$line=medical_send_line($msg,'medical_repair_status');medical_flash(!empty($line['ok'])?'success':'warning','บันทึกสถานะเรียบร้อย'.(!empty($line['ok'])?' และแจ้ง LINE สำเร็จ':' แต่ LINE ไม่สำเร็จ: '.(isset($line['error'])?$line['error']:'')));header('Location:detail.php?id='.$id);exit;

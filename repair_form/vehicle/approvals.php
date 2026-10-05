@@ -1,0 +1,10 @@
+<?php
+require_once __DIR__ . '/layout.php';
+$uid=(int)$_SESSION['user_id'];
+$where=$currentVehicleIsAdmin?"vr.status='pending_supervisor'":"vr.status='pending_supervisor' AND vr.supervisor_user_id=$uid";
+$rows=$conn->query("SELECT vr.*,vf.registration fleet_registration FROM vehicle_requests vr LEFT JOIN vehicle_fleet vf ON vf.id=vr.vehicle_id WHERE $where ORDER BY vr.use_date,vr.use_time,vr.id");
+vehicle_page_start('รายการรอหัวหน้างานรับรอง','รายการคำขอใช้รถที่รอการรับรองจากหัวหน้าแผนก ก่อนส่งต่อให้งานยานพาหนะดำเนินการ','approvals');
+?>
+<section class="vehicle-card"><div class="vehicle-card__header"><div><h2>คำขอรอรับรอง</h2><p><?= $currentVehicleIsAdmin?'Admin เห็นรายการรอรับรองทุกแผนก':'แสดงเฉพาะคำขอที่คุณเป็นหัวหน้างานผู้รับรอง' ?></p></div></div><div class="vehicle-table-wrap"><table class="vehicle-table"><thead><tr><th>เลขที่</th><th>ผู้ร้องขอ / แผนก</th><th>ประเภท</th><th>รถ</th><th>สถานที่</th><th>วันเวลา</th><th>คำสั่ง</th></tr></thead><tbody>
+<?php if($rows&&$rows->num_rows):while($r=$rows->fetch_assoc()):$tm=vehicle_request_type_meta($r['request_type']);?><tr><td><strong><?= vehicle_e($r['request_no']) ?></strong></td><td><?= vehicle_e($r['fullname']) ?><br><small><?= vehicle_e($r['department_name']) ?></small></td><td><span class="vehicle-type-pill <?= $r['request_type']==='refer'?'vehicle-type-pill--refer':'' ?>"><?= vehicle_e($tm[0]) ?></span></td><td><?= vehicle_e($r['private_registration']?$r['private_registration']:($r['hospital_registration']?$r['hospital_registration']:$r['fleet_registration'])) ?></td><td><?= vehicle_e($r['location']) ?></td><td><?= vehicle_format_thai_date($r['use_date']) ?><br><small><?= vehicle_e(substr((string)$r['use_time'],0,5)) ?> น.</small></td><td><a class="vehicle-btn vehicle-btn--primary vehicle-btn--small" href="detail.php?id=<?= (int)$r['id'] ?>">ตรวจสอบ / รับรอง</a></td></tr><?php endwhile;else:?><tr><td colspan="7"><div class="vehicle-empty"><strong>ไม่มีรายการรอรับรอง</strong></div></td></tr><?php endif;?></tbody></table></div></section>
+<?php vehicle_page_end(); ?>

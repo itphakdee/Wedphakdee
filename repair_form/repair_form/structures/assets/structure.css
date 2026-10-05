@@ -1,0 +1,916 @@
+/* =========================================
+   STRUCTURE MANAGEMENT SYSTEM
+   โรงพยาบาลภักดีชุมพล
+==========================================*/
+
+:root{
+
+    --primary:#1565c0;
+    --primary-dark:#0d47a1;
+    --success:#2e7d32;
+    --warning:#f9a825;
+    --danger:#d32f2f;
+    --info:#00acc1;
+
+    --bg:#eef3f8;
+
+    --card:#ffffff;
+
+    --text:#37474f;
+
+    --border:#dbe5ef;
+
+    --shadow:0 8px 25px rgba(0,0,0,.08);
+
+}
+
+body{
+
+    background:var(--bg);
+
+    font-family:"Sarabun",sans-serif;
+
+    color:var(--text);
+
+}
+
+/*=============================
+Container
+==============================*/
+
+.container-fluid{
+
+    padding:20px 30px;
+
+}
+
+/*=============================
+Card
+==============================*/
+
+.card{
+
+    border:none;
+
+    border-radius:16px;
+
+    box-shadow:var(--shadow);
+
+    overflow:hidden;
+
+}
+
+.card-header{
+
+    background:linear-gradient(90deg,#1976d2,#0d47a1);
+
+    color:#fff;
+
+    padding:18px 25px;
+
+}
+
+.card-header h4{
+
+    margin:0;
+
+    font-weight:700;
+
+}
+
+/*=============================
+Dashboard
+==============================*/
+
+.dashboard-card{
+
+    color:#fff;
+
+    border-radius:16px;
+
+    padding:22px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    min-height:135px;
+
+    transition:.3s;
+
+}
+
+.dashboard-card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+.dashboard-card i{
+
+    position:absolute;
+
+    right:20px;
+
+    top:18px;
+
+    font-size:55px;
+
+    opacity:.18;
+
+}
+
+.dashboard-card h6{
+
+    font-weight:600;
+
+    margin-bottom:10px;
+
+}
+
+.dashboard-card h2{
+
+    font-weight:700;
+
+}
+
+.bg-blue{
+
+    background:#1976d2;
+
+}
+
+.bg-green{
+
+    background:#2e7d32;
+
+}
+
+.bg-orange{
+
+    background:#ef6c00;
+
+}
+
+.bg-purple{
+
+    background:#6a1b9a;
+
+}
+
+/*=============================
+Search
+==============================*/
+
+.search-box{
+
+    background:#fff;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    box-shadow:var(--shadow);
+
+    margin-bottom:20px;
+
+}
+
+.search-box .form-control{
+
+    height:46px;
+
+    border-radius:10px;
+
+}
+
+.search-box .form-select{
+
+    height:46px;
+
+    border-radius:10px;
+
+}
+
+/*=============================
+Buttons
+==============================*/
+
+.btn{
+
+    border-radius:10px;
+
+    font-weight:600;
+
+}
+
+.btn-success{
+
+    background:#28a745;
+
+}
+
+.btn-primary{
+
+    background:#1976d2;
+
+}
+
+.btn-warning{
+
+    color:#000;
+
+}
+
+.btn-dark{
+
+    background:#495057;
+
+}
+
+.btn i{
+
+    margin-right:5px;
+
+}
+/*=========================================
+TABLE
+=========================================*/
+
+.table-responsive{
+
+    overflow:auto;
+
+    border-radius:15px;
+
+    box-shadow:var(--shadow);
+
+    background:#fff;
+
+}
+
+.table{
+
+    margin:0;
+
+    min-width:1600px;
+
+    white-space:nowrap;
+
+}
+
+.table thead th{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:10;
+
+    background:#1565c0;
+
+    color:#fff;
+
+    text-align:center;
+
+    vertical-align:middle;
+
+    padding:14px 10px;
+
+    border:1px solid #d9e2ef;
+
+    font-size:15px;
+
+    font-weight:700;
+
+}
+
+.table tbody td{
+
+    padding:11px;
+
+    vertical-align:middle;
+
+    border:1px solid #e5edf5;
+
+    font-size:14px;
+
+}
+
+.table tbody tr:nth-child(even){
+
+    background:#f8fbff;
+
+}
+
+.table tbody tr:hover{
+
+    background:#e8f2ff;
+
+    transition:.25s;
+
+}
+
+/*=========================================
+COLUMN
+=========================================*/
+
+.col-id{
+
+    width:60px;
+
+    text-align:center;
+
+}
+
+.col-name{
+
+    min-width:320px;
+
+}
+
+.col-price{
+
+    width:180px;
+
+    text-align:right;
+
+    color:#16a34a;
+
+    font-weight:bold;
+
+}
+
+.col-date{
+
+    width:130px;
+
+    text-align:center;
+
+}
+
+.col-budget{
+
+    width:150px;
+
+    text-align:center;
+
+}
+
+.col-age{
+
+    width:100px;
+
+    text-align:center;
+
+}
+
+.col-action{
+
+    width:190px;
+
+    text-align:center;
+
+}
+
+/*=========================================
+BADGE
+=========================================*/
+
+.badge-budget{
+
+    background:#0d6efd;
+
+    color:#fff;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+    font-size:13px;
+
+}
+
+.badge-donate{
+
+    background:#28a745;
+
+    color:#fff;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+}
+
+.badge-maintain{
+
+    background:#ff9800;
+
+    color:#fff;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+}
+
+.badge-normal{
+
+    background:#16a34a;
+
+    color:#fff;
+
+    padding:6px 10px;
+
+    border-radius:8px;
+
+}
+
+.badge-old{
+
+    background:#ef4444;
+
+    color:#fff;
+
+}
+
+.badge-new{
+
+    background:#16a34a;
+
+    color:#fff;
+
+}
+
+/*=========================================
+ACTION BUTTON
+=========================================*/
+
+.action-btn{
+
+    width:34px;
+
+    height:34px;
+
+    border:none;
+
+    border-radius:8px;
+
+    color:#fff;
+
+    margin:0 2px;
+
+    transition:.25s;
+
+}
+
+.action-btn:hover{
+
+    transform:scale(1.08);
+
+}
+
+.btn-view{
+
+    background:#06b6d4;
+
+}
+
+.btn-edit{
+
+    background:#ffc107;
+
+    color:#000;
+
+}
+
+.btn-print{
+
+    background:#0d6efd;
+
+}
+
+.btn-delete{
+
+    background:#dc3545;
+
+}
+
+/*=========================================
+PRICE
+=========================================*/
+
+.text-money{
+
+    color:#16a34a;
+
+    font-weight:700;
+
+    font-size:15px;
+
+}
+
+/*=========================================
+PAGINATION
+=========================================*/
+
+.pagination{
+
+    justify-content:center;
+
+    margin-top:20px;
+
+}
+
+.page-link{
+
+    border-radius:8px;
+
+    margin:0 3px;
+
+}
+
+.page-item.active .page-link{
+
+    background:#1565c0;
+
+    border-color:#1565c0;
+
+}
+
+/*=========================================
+INFO BAR
+=========================================*/
+
+.summary-bar{
+
+    background:#d9edf7;
+
+    border-left:5px solid #0d6efd;
+
+    padding:15px 20px;
+
+    border-radius:10px;
+
+    margin-bottom:20px;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+}
+/*=====================================================
+    RESPONSIVE
+=====================================================*/
+
+@media(max-width:1400px){
+
+.table{
+
+min-width:1400px;
+
+}
+
+}
+
+@media(max-width:1200px){
+
+.container-fluid{
+
+padding:15px;
+
+}
+
+.dashboard-card{
+
+margin-bottom:15px;
+
+}
+
+}
+
+@media(max-width:992px){
+
+.card-header{
+
+text-align:center;
+
+}
+
+.card-header .btn{
+
+margin-top:10px;
+
+}
+
+.search-box .row>div{
+
+margin-bottom:10px;
+
+}
+
+.table{
+
+font-size:13px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.dashboard-card{
+
+min-height:120px;
+
+}
+
+.dashboard-card h2{
+
+font-size:24px;
+
+}
+
+.dashboard-card i{
+
+font-size:38px;
+
+}
+
+.btn{
+
+width:100%;
+
+margin-bottom:8px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.table{
+
+font-size:12px;
+
+}
+
+.table thead th{
+
+font-size:12px;
+
+padding:10px;
+
+}
+
+.table tbody td{
+
+padding:8px;
+
+}
+
+}
+
+
+/*=====================================================
+    SCROLLBAR
+=====================================================*/
+
+::-webkit-scrollbar{
+
+height:9px;
+
+width:9px;
+
+}
+
+::-webkit-scrollbar-track{
+
+background:#e8eef6;
+
+border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+background:#1976d2;
+
+border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+background:#0d47a1;
+
+}
+
+
+/*=====================================================
+    HOVER EFFECT
+=====================================================*/
+
+.card{
+
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-3px);
+
+}
+
+.table tbody tr{
+
+transition:.25s;
+
+}
+
+.btn{
+
+transition:.25s;
+
+}
+
+.btn:hover{
+
+transform:translateY(-2px);
+
+box-shadow:0 5px 12px rgba(0,0,0,.18);
+
+}
+
+
+/*=====================================================
+    FORM
+=====================================================*/
+
+.form-control{
+
+border-radius:10px;
+
+border:1px solid #cfd8dc;
+
+}
+
+.form-control:focus{
+
+box-shadow:none;
+
+border-color:#1976d2;
+
+}
+
+.form-select{
+
+border-radius:10px;
+
+border:1px solid #cfd8dc;
+
+}
+
+.form-select:focus{
+
+box-shadow:none;
+
+border-color:#1976d2;
+
+}
+
+
+/*=====================================================
+    TITLE
+=====================================================*/
+
+.page-title{
+
+font-size:28px;
+
+font-weight:700;
+
+color:#0d47a1;
+
+}
+
+.page-subtitle{
+
+color:#607d8b;
+
+font-size:15px;
+
+}
+
+
+/*=====================================================
+    DATATABLE
+=====================================================*/
+
+.dataTables_wrapper .dataTables_filter{
+
+display:none;
+
+}
+
+.dataTables_wrapper .dataTables_length{
+
+margin-bottom:15px;
+
+}
+
+.dataTables_wrapper .dataTables_info{
+
+padding-top:20px;
+
+}
+
+.dataTables_wrapper .dataTables_paginate{
+
+padding-top:15px;
+
+}
+
+
+/*=====================================================
+    PRINT
+=====================================================*/
+
+@media print{
+
+body{
+
+background:#fff;
+
+}
+
+.btn{
+
+display:none;
+
+}
+
+.search-box{
+
+display:none;
+
+}
+
+.dashboard-card{
+
+box-shadow:none;
+
+}
+
+.card{
+
+box-shadow:none;
+
+}
+
+.table{
+
+min-width:100%;
+
+}
+
+}
+
+
+/*=====================================================
+    ANIMATION
+=====================================================*/
+
+@keyframes fadeIn{
+
+from{
+
+opacity:0;
+
+transform:translateY(20px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
+
+.dashboard-card{
+
+animation:fadeIn .5s ease;
+
+}
+
+.table-responsive{
+
+animation:fadeIn .7s ease;
+
+}

@@ -1,0 +1,41 @@
+/**
+ * Scheduler ตรวจ พ.ร.บ. รถทุกวัน
+ * วางฟังก์ชันนี้ใน Apps Script ที่มี Trigger ได้
+ *
+ * 1) เปลี่ยน PUBLIC_BASE_URL ให้เป็น URL ที่เข้าถึง Wedphakdee จากอินเทอร์เน็ต
+ * 2) TOKEN ต้องตรงกับ VEHICLE_POROBO_CRON_TOKEN ใน line_apps_script_config.php
+ * 3) Run createVehiclePoroboDailyTrigger() 1 ครั้ง
+ */
+function vehiclePoroboDailyCheck() {
+  var PUBLIC_BASE_URL = 'https://YOUR-PUBLIC-URL/Wedphakdee';
+  var TOKEN = 'PDC_POROBO_2026_7mQ9x4K2v8R';
+
+  var url = PUBLIC_BASE_URL
+    + '/vehicle/porobo_cron.php?token='
+    + encodeURIComponent(TOKEN);
+
+  var response = UrlFetchApp.fetch(url, {
+    method: 'get',
+    muteHttpExceptions: true
+  });
+
+  Logger.log('HTTP ' + response.getResponseCode());
+  Logger.log(response.getContentText());
+}
+
+function createVehiclePoroboDailyTrigger() {
+  var triggers = ScriptApp.getProjectTriggers();
+  for (var i = 0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() === 'vehiclePoroboDailyCheck') {
+      ScriptApp.deleteTrigger(triggers[i]);
+    }
+  }
+
+  ScriptApp.newTrigger('vehiclePoroboDailyCheck')
+    .timeBased()
+    .everyDays(1)
+    .atHour(8)
+    .create();
+
+  Logger.log('สร้าง Trigger ตรวจ พ.ร.บ. ทุกวันประมาณ 08:00 น. แล้ว');
+}

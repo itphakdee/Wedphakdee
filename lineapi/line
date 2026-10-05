@@ -1,0 +1,321 @@
+<?php
+session_start();
+
+/*
+|--------------------------------------------------------------------------
+| ตรวจสอบการ Login
+|--------------------------------------------------------------------------
+*/
+if (!isset($_SESSION["user_id"])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+/*
+|--------------------------------------------------------------------------
+| 1. ตั้งค่าเชื่อมต่อฐานข้อมูล
+|--------------------------------------------------------------------------
+*/
+$host = 'localhost';
+$db   = 'login_db';
+$user = 'root';
+$pass = '12345678';
+
+/*
+|--------------------------------------------------------------------------
+| 2. ตั้งค่า LINE API
+|--------------------------------------------------------------------------
+| ใช้ Token และ Group ID เดิมจากไฟล์ของคุณ
+|--------------------------------------------------------------------------
+*/
+$accessToken = "gHWAS2WB2oCsAdNNk9wz+kRePjgphps9OZkCExPlzjHNiBXFkFc8QEVYBXxdExm7Wube+RNDt2HGLcsKtAO8lDGrkT0nLuWPqCPakcRtFjmbctzhP9579F0JopMv2gJfLikVqL97txHCxlaivPoyCAdB04t89/1O/w1cDnyilFU=";
+
+$groupId = "Ce213eaf090cda6b4de630f90c70e7657";
+
+/*
+|--------------------------------------------------------------------------
+| 3. รับ User ID จาก Session
+|--------------------------------------------------------------------------
+| สำคัญ:
+| ไม่รับ user_id จาก POST เพราะผู้ใช้สามารถปลอมค่าได้
+|--------------------------------------------------------------------------
+*/
+$user_id = (int)$_SESSION["user_id"];
+
+if ($user_id <= 0) {
+    die("ไม่พบ User ID");
+}
+
+try {
+
+    /*
+    |--------------------------------------------------------------------------
+    | เชื่อมต่อฐานข้อมูล
+    |--------------------------------------------------------------------------
+    */
+    $pdo = new PDO(
+        "mysql:host=$host;dbname=$db;charset=utf8mb4",
+        $user,
+        $pass,
+        array(
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        )
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | 4. ตรวจ Method
+    |--------------------------------------------------------------------------
+    */
+    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+        header("Location: ../repair_form/computer/repair_form.php");
+        exit();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 5. รับข้อมูลจาก Form
+    |--------------------------------------------------------------------------
+    */
+    $sender_name   = trim($_POST['sender_name'] ?? '');
+    $department    = trim($_POST['department'] ?? '');
+    $repair_system = trim($_POST['repair_system'] ?? '');
+    $location      = trim($_POST['location'] ?? '');
+    $technician_id = (int)($_POST['technician_id'] ?? 0);
+    $details       = trim($_POST['details'] ?? '');
+    $priority      = trim($_POST['priority'] ?? 'normal');
+
+    /*
+    |--------------------------------------------------------------------------
+    | 6. ตรวจข้อมูล
+    |--------------------------------------------------------------------------
+    */
+    if (
+        $sender_name === '' ||
+        $department === '' ||
+        $repair_system === '' ||
+        $location === '' ||
+        $technician_id <= 0 ||
+        $details === '' ||
+        $priority === ''
+    ) {
+        echo "<script>
+            alert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+            history.back();
+        </script>";
+        exit();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ตรวจ Priority
+    |--------------------------------------------------------------------------
+    */
+    $allowedPriority = array(
+        'normal',
+        'urgent',
+        'emergency'
+    );
+
+    if (!in_array($priority, $allowedPriority, true)) {
+        $priority = 'normal';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 7. บันทึกงานลง repair_jobs
+    |--------------------------------------------------------------------------
+    | เพิ่ม user_id เพื่อให้หน้า
+    | "งานแจ้งซ่อมของฉัน"
+    | สามารถดึงเฉพาะงานของ User ที่ Login ได้
+    |--------------------------------------------------------------------------
+    */
+    $sql = "
+        INSERT INTO repair_jobs
+        (
+            user_id,
+            sender_name,
+            department,
+            repair_system,
+            location,
+            technician_id,
+            details,
+            priority
+        )
+        VALUES
+        (
+            ?, ?, ?, ?, ?, ?, ?, ?
+        )
+    ";
+
+    $stmt = $pdo->prepare($sql);
+
+    $stmt->execute(array(
+        $user_id,
+        $sender_name,
+        $department,
+        $repair_system,
+        $location,
+        $technician_id,
+        $details,
+        $priority
+    ));
+
+    /*
+    |--------------------------------------------------------------------------
+    | เลขที่งาน
+    |--------------------------------------------------------------------------
+    */
+    $jobId = (int)$pdo->lastInsertId();
+
+    /*
+    |--------------------------------------------------------------------------
+    | 8. เตรียมข้อความ LINE
+    |--------------------------------------------------------------------------
+    */
+    $priorityText = 'ปกติ';
+
+    if ($priority === 'urgent') {
+        $priorityText = 'ด่วน';
+    } elseif ($priority === 'emergency') {
+        $priorityText = 'ด่วนมาก';
+    }
+
+    $messageText =
+        "🆘 [แจ้งซ่อมใหม่]\n" .
+        "--------------------------\n" .
+        "🆔 เลขที่งาน: #{$jobId}\n" .
+        "👤 ผู้แจ้ง: {$sender_name}\n" .
+        "🏢 แผนก: {$department}\n" .
+        "🔧 ระบบซ่อม: {$repair_system}\n" .
+        "📍 สถานที่: {$location}\n" .
+        "📝 รายละเอียด: {$details}\n" .
+        "⚡ ความเร่งด่วน: {$priorityText}\n" .
+        "--------------------------\n" .
+        "⏰ เวลา: " . date("Y-m-d H:i:s");
+
+    /*
+    |--------------------------------------------------------------------------
+    | 9. ส่ง LINE
+    |--------------------------------------------------------------------------
+    */
+    $lineUrl = 'https://api.line.me/v2/bot/message/push';
+
+    $lineData = array(
+        'to' => $groupId,
+        'messages' => array(
+            array(
+                'type' => 'text',
+                'text' => $messageText
+            )
+        )
+    );
+
+    $linePost = json_encode(
+        $lineData,
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+    );
+
+    $lineHeaders = array(
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $accessToken
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | CURL
+    |--------------------------------------------------------------------------
+    */
+    $ch = curl_init($lineUrl);
+
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $linePost);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $lineHeaders);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+
+    $lineResult = curl_exec($ch);
+    $curlError  = curl_error($ch);
+    $httpCode   = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    curl_close($ch);
+
+    /*
+    |--------------------------------------------------------------------------
+    | 10. ตรวจผล LINE
+    |--------------------------------------------------------------------------
+    */
+    $lineSuccess = (
+        $curlError === '' &&
+        $httpCode >= 200 &&
+        $httpCode < 300
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | 11. กลับหน้าแจ้งซ่อม
+    |--------------------------------------------------------------------------
+    */
+    $message = 'บันทึกการแจ้งซ่อมเรียบร้อยแล้ว';
+
+    if ($lineSuccess) {
+        $message .= ' และส่งแจ้งเตือน LINE เรียบร้อยแล้ว';
+    } else {
+        $message .= ' แต่ส่ง LINE ไม่สำเร็จ';
+    }
+
+    $url = '../repair_form/computer/indexrepairlist.php?saved=1'
+        . '&job_id=' . urlencode((string)$jobId)
+        . '&line=' . ($lineSuccess ? 'success' : 'error');
+
+    /*
+    |--------------------------------------------------------------------------
+    | ถ้า LINE ล้มเหลว ให้แสดง HTTP Code เพื่อช่วยตรวจสอบ
+    |--------------------------------------------------------------------------
+    */
+    if (!$lineSuccess) {
+        $url .= '&line_code=' . urlencode((string)$httpCode);
+    }
+
+    echo "<script>
+        alert(" . json_encode($message, JSON_UNESCAPED_UNICODE) . ");
+        window.location=" . json_encode($url) . ";
+    </script>";
+
+    exit();
+} catch (PDOException $e) {
+
+    http_response_code(500);
+
+    echo "<div style='
+        font-family:Tahoma,Arial,sans-serif;
+        max-width:850px;
+        margin:40px auto;
+        padding:25px;
+        background:#fff3f3;
+        border:1px solid #f1b0b7;
+        border-radius:10px;
+        color:#842029;
+    '>";
+
+    echo "<h3>Database Error</h3>";
+
+    echo "<pre style='white-space:pre-wrap;'>" .
+        htmlspecialchars(
+            $e->getMessage(),
+            ENT_QUOTES,
+            'UTF-8'
+        ) .
+        "</pre>";
+
+    echo "<p>";
+    echo "<a href='../repair_form/computer/repair_form.php'>";
+    echo "← กลับหน้าแจ้งซ่อม";
+    echo "</a>";
+    echo "</p>";
+
+    echo "</div>";
+}

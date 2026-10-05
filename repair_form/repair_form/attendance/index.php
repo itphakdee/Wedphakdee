@@ -3,14 +3,14 @@
 <html>
 <head>
 <meta charset='utf-8'>
-<title>ระบบห้องประชุม</title>
+<title>ระบบลงเวลา</title>
 <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' rel='stylesheet'>
 </head>
 <body>
 
 <div class='container mt-4'>
 
-<h2>ระบบห้องประชุม</h2>
+<h2>ระบบลงเวลา</h2>
 <hr>
 
 <div class='alert alert-info'>

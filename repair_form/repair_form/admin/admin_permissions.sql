@@ -1,0 +1,83 @@
+USE login_db;
+
+CREATE TABLE IF NOT EXISTS admin_permissions (
+ id INT NOT NULL AUTO_INCREMENT,
+ module_key VARCHAR(50) NOT NULL,
+ module_name VARCHAR(100) NOT NULL,
+ action_key VARCHAR(50) NOT NULL,
+ action_name VARCHAR(100) NOT NULL,
+ status ENUM('active','inactive') NOT NULL DEFAULT 'active',
+ PRIMARY KEY(id),
+ UNIQUE KEY uq_module_action(module_key,action_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS user_permissions (
+ id INT NOT NULL AUTO_INCREMENT,
+ user_id INT NOT NULL,
+ permission_key VARCHAR(100) NOT NULL,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY(id),
+ UNIQUE KEY uq_user_permission(user_id,permission_key),
+ KEY idx_user(user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT IGNORE INTO admin_permissions(module_key,module_name,action_key,action_name) VALUES
+('dashboard','Dashboard','view','ดู'),
+('leave','วันลา','view','ดู'),('leave','วันลา','create','เพิ่ม'),('leave','วันลา','edit','แก้ไข'),('leave','วันลา','delete','ลบ'),('leave','วันลา','approve','อนุมัติ'),('leave','วันลา','manage','จัดการ'),
+('e_document','หนังสือราชการ','view','ดู'),('e_document','หนังสือราชการ','create','เพิ่ม'),('e_document','หนังสือราชการ','edit','แก้ไข'),('e_document','หนังสือราชการ','delete','ลบ'),('e_document','หนังสือราชการ','manage','จัดการ'),
+('vehicle','ยานพาหนะ','view','ดู'),('vehicle','ยานพาหนะ','create','เพิ่ม'),('vehicle','ยานพาหนะ','edit','แก้ไข'),('vehicle','ยานพาหนะ','delete','ลบ'),('vehicle','ยานพาหนะ','approve','อนุมัติ'),('vehicle','ยานพาหนะ','manage','จัดการ'),
+('repair','แจ้งซ่อม','view','ดู'),('repair','แจ้งซ่อม','create','เพิ่ม'),('repair','แจ้งซ่อม','edit','แก้ไข'),('repair','แจ้งซ่อม','delete','ลบ'),('repair','แจ้งซ่อม','approve','อนุมัติ'),('repair','แจ้งซ่อม','manage','จัดการ'),
+('structures','อาคาร','view','ดู'),('structures','อาคาร','create','เพิ่ม'),('structures','อาคาร','edit','แก้ไข'),('structures','อาคาร','delete','ลบ'),('structures','อาคาร','manage','จัดการ'),
+('meeting','ห้องประชุม','view','ดู'),('meeting','ห้องประชุม','create','จอง'),('meeting','ห้องประชุม','edit','แก้ไข'),('meeting','ห้องประชุม','delete','ลบ'),('meeting','ห้องประชุม','approve','อนุมัติ'),('meeting','ห้องประชุม','manage','จัดการ'),
+('personnel','บุคลากร','view','ดู'),('personnel','บุคลากร','create','เพิ่ม'),('personnel','บุคลากร','edit','แก้ไข'),('personnel','บุคลากร','delete','ลบ'),('personnel','บุคลากร','manage','จัดการ'),
+('users','ผู้ใช้งาน','view','ดู'),('users','ผู้ใช้งาน','create','เพิ่ม'),('users','ผู้ใช้งาน','edit','แก้ไข'),('users','ผู้ใช้งาน','delete','ลบ'),('users','ผู้ใช้งาน','manage','จัดการ'),
+('admin','Admin','view','ดู'),('admin','Admin','manage','จัดการ');
+
+INSERT IGNORE INTO admin_permissions(module_key,module_name,action_key,action_name) VALUES
+('propertywork','ทรัพย์สิน','view','ดู'),
+('propertywork','ทรัพย์สิน','create','เพิ่ม'),
+('propertywork','ทรัพย์สิน','edit','แก้ไข'),
+('propertywork','ทรัพย์สิน','delete','ลบ'),
+('propertywork','ทรัพย์สิน','manage','จัดการ'),
+('asset','งานทรัพย์สิน','view','ดู'),
+('asset','งานทรัพย์สิน','create','เพิ่ม'),
+('asset','งานทรัพย์สิน','edit','แก้ไข'),
+('asset','งานทรัพย์สิน','delete','ลบ'),
+('asset','งานทรัพย์สิน','manage','จัดการ'),
+('attendance','ลงเวลา','view','ดู'),
+('attendance','ลงเวลา','create','เพิ่ม'),
+('attendance','ลงเวลา','edit','แก้ไข'),
+('attendance','ลงเวลา','delete','ลบ'),
+('attendance','ลงเวลา','manage','จัดการ'),
+('computer','แจ้งซ่อมคอมพิวเตอร์','view','ดู'),
+('computer','แจ้งซ่อมคอมพิวเตอร์','create','เพิ่ม'),
+('computer','แจ้งซ่อมคอมพิวเตอร์','edit','แก้ไข'),
+('computer','แจ้งซ่อมคอมพิวเตอร์','delete','ลบ'),
+('computer','แจ้งซ่อมคอมพิวเตอร์','receive','รับงาน'),
+('computer','แจ้งซ่อมคอมพิวเตอร์','approve','อนุมัติ'),
+('computer','แจ้งซ่อมคอมพิวเตอร์','manage','จัดการ'),
+('estate','ทะเบียนที่ดิน','view','ดู'),
+('estate','ทะเบียนที่ดิน','create','เพิ่ม'),
+('estate','ทะเบียนที่ดิน','edit','แก้ไข'),
+('estate','ทะเบียนที่ดิน','delete','ลบ'),
+('estate','ทะเบียนที่ดิน','manage','จัดการ'),
+('finance','งานพัสดุ','view','ดู'),
+('finance','งานพัสดุ','create','เพิ่ม'),
+('finance','งานพัสดุ','edit','แก้ไข'),
+('finance','งานพัสดุ','delete','ลบ'),
+('finance','งานพัสดุ','manage','จัดการ'),
+('maintenance','งานซ่อมบำรุง','view','ดู'),
+('maintenance','งานซ่อมบำรุง','create','เพิ่ม'),
+('maintenance','งานซ่อมบำรุง','edit','แก้ไข'),
+('maintenance','งานซ่อมบำรุง','delete','ลบ'),
+('maintenance','งานซ่อมบำรุง','manage','จัดการ'),
+('medical','ศูนย์เครื่องมือแพทย์','view','ดู'),
+('medical','ศูนย์เครื่องมือแพทย์','create','เพิ่ม'),
+('medical','ศูนย์เครื่องมือแพทย์','edit','แก้ไข'),
+('medical','ศูนย์เครื่องมือแพทย์','delete','ลบ'),
+('medical','ศูนย์เครื่องมือแพทย์','manage','จัดการ'),
+('security','รปภ.','view','ดู'),
+('security','รปภ.','create','เพิ่ม'),
+('security','รปภ.','edit','แก้ไข'),
+('security','รปภ.','delete','ลบ'),
+('security','รปภ.','manage','จัดการ');

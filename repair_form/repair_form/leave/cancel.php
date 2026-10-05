@@ -1,0 +1,5 @@
+<?php
+require_once __DIR__ . '/config_leave.php';if($_SERVER['REQUEST_METHOD']!=='POST')leave_redirect('index.php');leave_require_csrf();
+$id=(int)($_POST['id']??0);$reason=trim((string)($_POST['reason']??''));$row=leave_get_application($id);$uid=(int)$_SESSION['user_id'];
+if(!$row||(int)$row['user_id']!==$uid){http_response_code(403);die('ไม่มีสิทธิ์ยกเลิกรายการนี้');}if($reason===''){leave_flash('error','กรุณาระบุเหตุผลการยกเลิก');leave_redirect('detail.php?id='.$id.'#cancel');}if(in_array($row['status'],array('cancelled','rejected','cancel_requested'),true)){leave_flash('warning','รายการนี้ไม่สามารถแจ้งยกเลิกได้');leave_redirect('detail.php?id='.$id);}
+$before=$row['status'];$stmt=$conn->prepare("UPDATE leave_applications SET status_before_cancel=?,status='cancel_requested',cancel_reason=?,cancel_requested_at=NOW(),updated_at=NOW() WHERE id=?");$stmt->bind_param('ssi',$before,$reason,$id);$stmt->execute();$stmt->close();leave_audit($id,'cancel_request','ผู้ยื่นใบลาส่งคำขอยกเลิก: '.$reason);leave_flash('success','ส่งคำขอยกเลิกให้หัวหน้างานแล้ว');leave_redirect('detail.php?id='.$id);
