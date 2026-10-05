@@ -1,4 +1,5 @@
 <?php
+<<<<<<< HEAD
 require_once __DIR__ . '/layout.php';
 medical_require_permission('view');
 
@@ -34,6 +35,23 @@ medical_page_start('ศูนย์เครื่องมือแพทย์
 <?php if (!$ready): ?>
 <div class="med-alert med-alert--warning"><strong>ระบบยังไม่ได้ติดตั้งฐานข้อมูล</strong> <?php if (medical_is_admin()): ?><a href="install.php">คลิกเพื่อติดตั้งระบบ</a><?php else: ?>กรุณาติดต่อผู้ดูแลระบบ<?php endif; ?></div>
 <?php endif; ?>
+=======
+
+$data = require_once '../../mock_data/mock_data.php';
+
+include '../../components/header.php';
+include '../../components/navbar.php';
+?>
+<div class="container-fluid mt-3">
+
+    <?php include 'filter.php'; ?>
+
+    <?php include 'card_summary.php'; ?>
+
+    <?php include 'dashboard.php'; ?>
+
+    <?php include 'chart.php'; ?>
+>>>>>>> fb3c0dc7acd8a854025096300d1bd8e2cea6daf8
 
 <section class="med-stat-grid">
     <div class="med-stat"><span>งานทั้งหมด</span><strong><?= (int)$stats['total'] ?></strong><small>รายการในระบบ</small></div>
@@ -43,6 +61,7 @@ medical_page_start('ศูนย์เครื่องมือแพทย์
     <div class="med-stat med-stat--danger"><span>ด่วนมากคงค้าง</span><strong><?= (int)$stats['emergency'] ?></strong><small>ควรเร่งดำเนินการ</small></div>
 </section>
 
+<<<<<<< HEAD
 <section class="med-card" id="new-request">
     <div class="med-card-head">
         <div class="med-section-no">01</div>
@@ -83,3 +102,9 @@ medical_page_start('ศูนย์เครื่องมือแพทย์
 </section>
 
 <?php medical_page_end(); ?>
+=======
+<?php
+include '../../components/footer.php';
+include '../../components/scripts.php';
+?>
+>>>>>>> fb3c0dc7acd8a854025096300d1bd8e2cea6daf8
